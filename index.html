@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <title>Clusters — densidade de relações (p5 + d3)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- p5 para render -->
+  <script src="https://unpkg.com/p5@1.9.0/lib/p5.min.js"></script>
+  <!-- d3 bundle (inclui force) -->
+  <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js"></script>
+</head>
+<body>
+  <div id="ui">
+    <div id="ui-header">
+      <strong class="title">Clusters interativos</strong>
+      <button id="toggle-ui" aria-label="Alternar UI" title="Minimizar/expandir">⮟</button>
+    </div>
+
+    <div id="ui-body">
+      <label>Força de cluster
+        <input id="clusterK" type="range" min="0" max="1" step="0.01" value="0">
+      </label>
+      <label>Repulsão (|-| maior = espalha)
+        <input id="charge" type="range" min="-16000" max="-1000" step="10" value="-4000">
+      </label>
+      <label>Raio de colisão
+        <input id="collisionR" type="range" min="6" max="28" step="1" value="14">
+      </label>
+
+      <div class="sep"></div>
+
+      <label class="row">
+        <span>Mapa de densidade</span>
+        <input id="heatOn" type="checkbox" checked>
+      </label>
+      <label>Espessura do calor
+        <input id="heatThickness" type="range" min="2" max="20" step="1" value="8">
+      </label>
+      <label>Blur do calor
+        <input id="heatBlur" type="range" min="0" max="6" step="1" value="2">
+      </label>
+      <label>Intensidade (α)
+        <input id="heatAlpha" type="range" min="4" max="64" step="2" value="24">
+      </label>
+
+      <div class="buttons">
+        <button id="toggle">Pausar</button>
+        <button id="cool">Esfriar</button>
+        <button id="reheat">Aquecer</button>
+      </div>
+      <small>Arraste os nós. Ao soltar, o layout “esfria” e estabiliza.</small>
+    </div>
+
+    <!-- legenda sempre visível mesmo minimizado -->
+    <div id="legend" aria-label="Legenda de cores"></div>
+  </div>
+
+  <script src="./main.js"></script>
+</body>
+</html>
