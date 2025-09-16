@@ -424,6 +424,33 @@ function drawHeatFromLinks(p) {
   p.pop();
 }
 
+function startDragAt(p, x, y) {
+  const r = +document.getElementById('collisionR').value;
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    const n = nodes[i];
+    if (p.dist(x, y, n.x, n.y) < r + 4) {
+      dragging = n;
+      n.fx = n.x; n.fy = n.y;
+      simulation.alphaTarget(0.4).restart();
+      return true;
+    }
+  }
+  return false;
+}
+function moveDragAt(_p, x, y) {
+  if (dragging) { dragging.fx = x; dragging.fy = y; return true; }
+  return false;
+}
+function endDrag() {
+  if (dragging) {
+    dragging.fx = null; dragging.fy = null; dragging = null;
+    simulation.alphaTarget(0).alpha(0.25);
+    return true;
+  }
+  return false;
+}
+
+
 // ===== 7) p5 sketch (desenho/drag/labels) =================================
 let dragging = null;
 
@@ -447,24 +474,45 @@ let sketch = (p) => {
   };
 
   p.mousePressed = () => {
-    const r = +document.getElementById('collisionR').value;
-    for (let i = nodes.length - 1; i >= 0; i--) {
-      const n = nodes[i];
-      if (p.dist(p.mouseX, p.mouseY, n.x, n.y) < r + 4) {
-        dragging = n; n.fx = n.x; n.fy = n.y;
-        simulation.alphaTarget(0.4).restart();
-        return;
-      }
-    }
+    startDragAt(p, p.mouseX, p.mouseY);
+    // const r = +document.getElementById('collisionR').value;
+    // for (let i = nodes.length - 1; i >= 0; i--) {
+    //   const n = nodes[i];
+    //   if (p.dist(p.mouseX, p.mouseY, n.x, n.y) < r + 4) {
+    //     dragging = n; n.fx = n.x; n.fy = n.y;
+    //     simulation.alphaTarget(0.4).restart();
+    //     return;
+    //   }
+    // }
   };
 
   p.mouseDragged = () => {
-    if (dragging) { dragging.fx = p.mouseX; dragging.fy = p.mouseY; }
+    moveDragAt(p, p.mouseX, p.mouseY);
+    // if (dragging) { dragging.fx = p.mouseX; dragging.fy = p.mouseY; }
   };
 
   p.mouseReleased = () => {
-    if (dragging) { dragging.fx = null; dragging.fy = null; dragging = null; simulation.alphaTarget(0).alpha(0.25); }
+    endDrag();
+    // if (dragging) { dragging.fx = null; dragging.fy = null; dragging = null; simulation.alphaTarget(0).alpha(0.25); }
   };
+  p.touchStarted = () => {
+  // usa o primeiro dedo
+  const t = p.touches && p.touches[0];
+  if (t) startDragAt(p, t.x, t.y);
+  return false; // evita scroll da página
+};
+
+p.touchMoved = () => {
+  const t = p.touches && p.touches[0];
+  if (t) moveDragAt(p, t.x, t.y);
+  return false; // evita pan/zoom do navegador
+};
+
+p.touchEnded = () => {
+  endDrag();
+  return false;
+};
+
 
   // Mapeamento de espessura visual (linhas)
   const EDGE_THICK_MIN = 0.00001;

@@ -11,6 +11,8 @@ canvas {
   position: fixed;
   inset: 0;
   z-index: 0;
+  /* impede pan/zoom do navegador em cima do canvas; deixa o p5 receber o toque */
+  touch-action: none;
 }
 
 /* Painel discreto no canto esquerdo */
@@ -28,6 +30,8 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  /* os controles seguem normais (arrastar sliders etc.) */
+  touch-action: auto;
 }
 
 #ui-header {
