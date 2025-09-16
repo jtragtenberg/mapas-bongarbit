@@ -38,8 +38,7 @@ const TAG_PRIORITY = {
   pirao: 0,
   projeto_rumos: 1, projeto_funcultura: 1,
   terreiro_xamba: 2, moradores_xamba: 2,
-  centro_cultural: 3, bongar: 3, ere_sankofa: 3, mixidinho: 3, ori: 3,
-  zarina: 4,
+  centro_cultural: 3, bongar: 3, ere_sankofa: 3, mixidinho: 3, ori: 3
 };
 
 // ===== 1) Dados — agora aceita pesos (1–100) por tag =======================
@@ -534,16 +533,65 @@ for (const n of nodes) {
 new p5(sketch);
 
 // ===== 8) Menu minimizar/expandir =========================================
+// document.addEventListener('DOMContentLoaded', () => {
+//   // PREENCHE A LEGENDA ASSIM QUE A PÁGINA CARREGA
+//   renderLegendTagColors();
+
+//   const ui  = document.getElementById('ui');
+//   const btn = document.getElementById('toggle-ui');
+//   if (!ui || !btn) return;
+
+//   btn.addEventListener('click', () => {
+//     ui.classList.toggle('minimized');
+//     btn.textContent = ui.classList.contains('minimized') ? '⮟' : '⮝';
+//   });
+// });
+
 document.addEventListener('DOMContentLoaded', () => {
-  // PREENCHE A LEGENDA ASSIM QUE A PÁGINA CARREGA
-  renderLegendTagColors();
+  // legenda já de cara (se você tiver a função definida)
+  if (typeof renderLegendTagColors === 'function') renderLegendTagColors();
 
   const ui  = document.getElementById('ui');
   const btn = document.getElementById('toggle-ui');
-  if (!ui || !btn) return;
 
-  btn.addEventListener('click', () => {
-    ui.classList.toggle('minimized');
-    btn.textContent = ui.classList.contains('minimized') ? '⮟' : '⮝';
+  // --- botão fantasma para reabrir quando o painel estiver escondido ---
+  const ghost = document.createElement('button');
+  ghost.id = 'ui-ghost';
+  ghost.textContent = 'Mostrar painel';
+  document.body.appendChild(ghost);
+
+  // --- botão para ocultar totalmente (criamos no header) ---
+  const header = document.getElementById('ui-header');
+  const hideBtn = document.createElement('button');
+  hideBtn.id = 'hide-ui';
+  hideBtn.title = 'Ocultar painel (atalho: H)';
+  hideBtn.textContent = '×';
+  hideBtn.style.cssText = 'background:transparent;border:none;color:#b9c0cf;font-size:16px;cursor:pointer;padding:2px 4px;';
+  header && header.appendChild(hideBtn);
+
+  // estado persistido
+  const setHidden = (val) => {
+    if (!ui) return;
+    if (val) { ui.classList.add('hidden'); ghost.classList.add('visible'); }
+    else     { ui.classList.remove('hidden'); ghost.classList.remove('visible'); }
+    try { localStorage.setItem('uiHidden', val ? '1' : '0'); } catch {}
+  };
+  setHidden(localStorage.getItem('uiHidden') === '1');
+
+  // minimizar/expandir (seu comportamento original)
+  if (btn && ui) {
+    btn.addEventListener('click', () => {
+      ui.classList.toggle('minimized');
+      btn.textContent = ui.classList.contains('minimized') ? '⮟' : '⮝';
+    });
+  }
+
+  // esconder total
+  hideBtn.addEventListener('click', () => setHidden(true));
+  ghost.addEventListener('click', () => setHidden(false));
+
+  // atalho de teclado: H para esconder/mostrar
+  window.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() === 'h') setHidden(!ui.classList.contains('hidden'));
   });
 });

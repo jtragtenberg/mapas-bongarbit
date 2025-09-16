@@ -51,6 +51,8 @@ canvas {
   gap: 8px;
 }
 
+
+
 #ui label {
   font-size: 12px;
   color: #b9c0cf;
@@ -103,5 +105,26 @@ button:hover { background: #232936; }
 }
 
 /* --- Minimizar: esconde só os controles, NÃO a legenda --- */
-#ui.minimized #ui-body { display: none; }
+#ui.minimized #ui-body  { display: none; }
 /* (não coloque display:none no #legend) */
+
+/* esconde o painel inteiro quando tiver a classe .hidden */
+#ui.hidden { display: none !important; }
+
+/* “botão fantasma” pra reabrir o painel quando estiver escondido */
+#ui-ghost {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1001;
+  display: none;            /* só aparece quando o UI está escondido */
+  background: rgba(20,22,28,.85);
+  backdrop-filter: blur(6px);
+  color: #e6e6e6;
+  border: 1px solid #2a2f3a;
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font: 500 12px/1 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu;
+}
+#ui-ghost.visible { display: inline-flex; }
